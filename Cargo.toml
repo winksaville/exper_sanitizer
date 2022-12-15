@@ -1,0 +1,46 @@
+# Enable rustflags in profiles
+cargo-features = ["profile-rustflags"]
+
+[package]
+name = "exper_sanitizer"
+authors = [ "Wink Saville <wink@saville.com" ]
+license = "MIT OR Apache-2.0"
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.66"
+
+[build]
+target = "x86_64-unknown-linux-gnu"
+
+# From: https://doc.rust-lang.org/cargo/reference/profiles.html#dev
+[profile.dev]
+opt-level = 0
+debug = true
+#split-debuginfo = '...'  # Platform-specific.
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = 'unwind'
+incremental = true
+codegen-units = 256
+rpath = false
+
+# From: https://doc.rust-lang.org/cargo/reference/profiles.html#release
+[profile.release]
+opt-level = 3
+debug = false
+#split-debuginfo = '...'  # Platform-specific.
+debug-assertions = false
+overflow-checks = false
+lto = false
+panic = 'unwind'
+incremental = false
+codegen-units = 1
+rpath = false
+
+[profile.sanitizer]
+inherits = "dev"
+rustflags = [ "-Zsanitizer=address", ]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]

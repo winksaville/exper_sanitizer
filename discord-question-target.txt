@@ -1,0 +1,39 @@
+I'm using AddressSanitizer, https://doc.rust-lang.org/beta/unstable-book/compiler-flags/sanitizer.html,
+as suggested there I use `$ RUSTFLAGS=-Zsanitizer=address cargo build -Zbuild-std --target x86_64-unknown-linux-gnu`
+and things are "working", but I'd like to have a simpler command line. So added `cargo-features = ["profile-rustflags"]`
+to the top of the Carog.toml and added a profile:
+```
+[profile.sanitizer]
+inherits = "dev"
+rustflags = [ "-Zsanitizer=address", ]
+```
+So that handles adding RUSTFLAGS to the command-line.
+
+Next I added .cargo/config with:
+```
+[profile.sanitizer]
+inherits = "dev"
+rustflags = [ "-Zsanitizer=address", ]
+```
+
+Then I don't need to pass -Zbuild-std. 
+
+So with those things done my command line is cargo run --profile=sanitizer --target x86_64-unknown-linux-gnu .
+
+I'm now looking for suggestions on how to set --target ... in config or Cargo.toml so I don't have to pass it. I've tried adding:
+```
+[build]
+target = "x86_64-unknown-linux-gnu"
+```
+
+But that doesn't help, I get:
+```
+$ cargo run --profile=sanitizer
+error: -Zbuild-std requires --target
+```
+
+And with the [build] and passing --target x86... on the command-line get a warning:
+```
+$ cargo run --profile=sanitizer --target x86_64-unknown-linux-gnu
+warning: unused manifest key: build
+```
