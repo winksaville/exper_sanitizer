@@ -11,11 +11,9 @@ So that handles adding RUSTFLAGS to the command-line.
 
 Next I added .cargo/config with:
 ```
-[profile.sanitizer]
-inherits = "dev"
-rustflags = [ "-Zsanitizer=address", ]
+[unstable]
+build-std = [ "core", "std", "alloc", "proc_macro"]
 ```
-
 Then I don't need to pass -Zbuild-std. 
 
 So with those things done my command line is cargo run --profile=sanitizer --target x86_64-unknown-linux-gnu .
